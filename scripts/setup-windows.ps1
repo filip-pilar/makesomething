@@ -63,7 +63,6 @@ $codexInstalled = $false
 try {
     codex --version 2>$null | Out-Null
     if ($LASTEXITCODE -eq 0) {
-        Write-Host "[OK] Codex CLI already installed"
         $codexInstalled = $true
     }
 } catch {}
@@ -71,6 +70,9 @@ try {
 if (-not $codexInstalled) {
     Write-Host "-> Installing Codex CLI..."
     npm install -g @openai/codex
+} else {
+    Write-Host "-> Updating Codex CLI..."
+    npm update -g @openai/codex
 }
 
 # --- Check for git ---

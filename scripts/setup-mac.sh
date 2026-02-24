@@ -70,7 +70,8 @@ if ! command -v codex &>/dev/null; then
   echo "→ Installing Codex CLI..."
   npm install -g @openai/codex
 else
-  echo "✓ Codex CLI already installed"
+  echo "→ Updating Codex CLI..."
+  npm update -g @openai/codex
 fi
 
 # --- 4. Git ---
