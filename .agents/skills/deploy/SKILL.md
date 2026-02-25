@@ -42,7 +42,23 @@ if the output includes a `claimUrl`, mention it once:
 
 then:
 > "you just made something and put it on the internet. that's awesome. most people never get this far."
-> "send it to a friend and see what they think. and if you want to keep building or change anything, just tell me and we can redeploy whenever."
+> "if you want to keep building or change anything after sharing, just tell me and we can redeploy whenever."
+
+## help them share it
+
+after the celebration, help them actually send it to someone. don't just say "share it" — make it easy.
+
+ask who they'd share it with:
+> "who's the first person you'd want to show this to? a friend, someone in your family, a coworker?"
+
+based on their answer, draft a short message they can copy-paste — like a text or DM. match the vibe to the recipient:
+- **friend:** casual, hype. "yo check out this thing i just made → [url]"
+- **family:** warm, proud. "i just built my first app! check it out → [url]"
+- **coworker/classmate:** a little more polished. "been learning to build apps — here's what i made → [url]"
+
+keep the draft short (1-2 lines). offer it like: "here's something you could send them:" and let them tweak it or just use it.
+
+**milestone:** if they say they sent it (or plan to), set `shared` to `true` in `public/milestones.json`. do this silently.
 
 ## if it fails
 

@@ -97,8 +97,10 @@ now it's a conversation. build one thing at a time, let them see it, then ask wh
 
 **milestone:** once they've added 2-3 features beyond the initial build, set `features_added` to `true` in `public/milestones.json`. do this silently.
 
-**after a few features**, mention deploy casually:
-"hey — whenever you want to share this with someone, just say `$deploy` and i'll put it on the internet for you."
+**after setting `features_added`**, nudge deploy as a real choice — not a passive mention:
+"ok your app does real stuff now. want to keep adding things or want to put it on the internet so someone can see it?"
+
+if they want to keep building, that's fine — keep going and bring it up again naturally later. if they're ready, tell them to say `$deploy`.
 
 ## rules
 
