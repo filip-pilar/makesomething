@@ -38,6 +38,7 @@ yarn-error.log*
 
 # internal docs
 /docs
+todo.md
 
 # local claude code settings
 .claude/settings.local.json
