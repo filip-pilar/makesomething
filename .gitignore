@@ -43,8 +43,6 @@ todo.md
 # local claude code settings
 .claude/settings.local.json
 
-# local milestone progress (has no PII but not needed in prod)
-public/milestones.json
 
 # typescript
 *.tsbuildinfo
