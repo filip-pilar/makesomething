@@ -8,6 +8,15 @@ set -euo pipefail
 
 DEPLOY_ENDPOINT="https://codex-deploy-skills.vercel.sh/api/deploy"
 
+extract_json_field() {
+    local json="$1"
+    local field="$2"
+    # Flatten newlines to keep extraction resilient.
+    local compact
+    compact=$(printf '%s' "$json" | tr -d '\n')
+    printf '%s' "$compact" | sed -n "s/.*\"$field\":\"\\([^\"]*\\)\".*/\\1/p"
+}
+
 # Detect framework from package.json
 detect_framework() {
     local pkg_json="$1"
@@ -201,6 +210,10 @@ elif [ -d "$INPUT_PATH" ]; then
     tar -C "$PROJECT_PATH" \
         --exclude='node_modules' \
         --exclude='.git' \
+        --exclude='.next' \
+        --exclude='.agents' \
+        --exclude='.claude' \
+        --exclude='.codex' \
         --exclude='.env' \
         --exclude='.env.*' \
         -cf - . | tar -C "$STAGING_DIR" -xf -
@@ -236,18 +249,31 @@ fi
 
 # Deploy
 echo "Deploying..." >&2
-RESPONSE=$(curl -s -X POST "$DEPLOY_ENDPOINT" -F "file=@$TARBALL" -F "framework=$FRAMEWORK")
+CURL_OUTPUT=$(curl -sS -w '\n%{http_code}' -X POST "$DEPLOY_ENDPOINT" -F "file=@$TARBALL" -F "framework=$FRAMEWORK")
+HTTP_STATUS=$(printf '%s' "$CURL_OUTPUT" | tail -n 1)
+RESPONSE=$(printf '%s' "$CURL_OUTPUT" | sed '$d')
+
+if [ -z "$HTTP_STATUS" ] || [ "$HTTP_STATUS" -ge 400 ]; then
+    echo "Error: Deployment service returned HTTP ${HTTP_STATUS:-unknown}" >&2
+    if [ -n "$RESPONSE" ]; then
+        echo "$RESPONSE" >&2
+    fi
+    exit 1
+fi
 
 # Check for error in response
-if echo "$RESPONSE" | grep -q '"error"'; then
-    ERROR_MSG=$(echo "$RESPONSE" | grep -o '"error":"[^"]*"' | cut -d'"' -f4)
+if [[ "$RESPONSE" == *'"error"'* ]]; then
+    ERROR_MSG=$(extract_json_field "$RESPONSE" "error")
+    if [ -z "$ERROR_MSG" ]; then
+        ERROR_MSG="$RESPONSE"
+    fi
     echo "Error: $ERROR_MSG" >&2
     exit 1
 fi
 
 # Extract URLs from response
-PREVIEW_URL=$(echo "$RESPONSE" | grep -o '"previewUrl":"[^"]*"' | cut -d'"' -f4)
-CLAIM_URL=$(echo "$RESPONSE" | grep -o '"claimUrl":"[^"]*"' | cut -d'"' -f4)
+PREVIEW_URL=$(extract_json_field "$RESPONSE" "previewUrl")
+CLAIM_URL=$(extract_json_field "$RESPONSE" "claimUrl")
 
 if [ -z "$PREVIEW_URL" ]; then
     echo "Error: Could not extract preview URL from response" >&2
@@ -265,12 +291,12 @@ ATTEMPT=0
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PREVIEW_URL")
     
-    if [ "$HTTP_STATUS" -eq 200 ]; then
+    if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 400 ]; then
         echo "" >&2
         echo "Deployment ready!" >&2
         break
-    elif [ "$HTTP_STATUS" -ge 500 ]; then
-        # 5xx means still building/deploying
+    elif [ "$HTTP_STATUS" -eq 404 ] || [ "$HTTP_STATUS" -ge 500 ]; then
+        # 404/5xx often indicate a deployment that is still building.
         echo "Building... (attempt $((ATTEMPT + 1))/$MAX_ATTEMPTS)" >&2
         sleep 5
         ATTEMPT=$((ATTEMPT + 1))
