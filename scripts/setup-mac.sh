@@ -17,8 +17,9 @@ echo ""
 
 # --- 1. Homebrew ---
 if ! command -v brew &>/dev/null; then
-  echo "→ Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "→ Installing Homebrew (you may need to enter your Mac password)..."
+  sudo -v
+  NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   # Add brew to PATH for Apple Silicon, Intel, or Linux
   if [[ -f /opt/homebrew/bin/brew ]]; then
