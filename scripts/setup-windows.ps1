@@ -1,6 +1,9 @@
 # Make Something — Windows Setup
 # Run with: irm https://raw.githubusercontent.com/filip-pilar/makesomething/main/scripts/setup-windows.ps1 | iex
 
+# Allow scripts (like npm.ps1) to run in this session
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+
 $ErrorActionPreference = "Stop"
 
 $REPO_URL = "https://github.com/filip-pilar/makesomething.git"
