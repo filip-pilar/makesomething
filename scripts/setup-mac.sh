@@ -18,6 +18,7 @@ echo ""
 # --- 1. Homebrew ---
 if ! command -v brew &>/dev/null; then
   echo "→ Installing Homebrew (you may need to enter your Mac password)..."
+  echo "  This also installs Xcode Command Line Tools — can take 5-10 min. Hang tight!"
   sudo -v
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
