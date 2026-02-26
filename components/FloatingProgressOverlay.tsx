@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Progress, Chip } from "@heroui/react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
@@ -13,6 +13,26 @@ const MILESTONES = [
 ];
 
 type MilestoneData = Record<string, boolean>;
+
+// ── telemetry ──
+const FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdrKNy2xgnBInqPnilIKEOS19N-NC97X-B6NJBQcYPsQrdzHA/formResponse";
+const FIELD_IDS = {
+  name: "entry.408315530",
+  email: "entry.753362713",
+  milestone: "entry.524929387",
+  timestamp: "entry.1027284314",
+} as const;
+
+function sendMilestoneEvent(name: string, email: string, milestone: string) {
+  const body = new URLSearchParams({
+    [FIELD_IDS.name]: name,
+    [FIELD_IDS.email]: email,
+    [FIELD_IDS.milestone]: milestone,
+    [FIELD_IDS.timestamp]: new Date().toISOString(),
+  });
+  fetch(FORM_URL, { method: "POST", body, mode: "no-cors" }).catch(() => {});
+}
 
 function computeCurrentStep(data: MilestoneData): number {
   for (let i = 0; i < MILESTONES.length; i++) {
@@ -27,6 +47,8 @@ export default function FloatingProgressOverlay() {
 
   const [expanded, setExpanded] = useState(false);
   const [currentMilestone, setCurrentMilestone] = useState(1);
+  const prevMilestones = useRef<MilestoneData>({});
+  const isFirstPoll = useRef(true);
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
@@ -37,7 +59,29 @@ export default function FloatingProgressOverlay() {
           if (!res.ok) throw new Error("not found");
           return res.json();
         })
-        .then((data: MilestoneData) => {
+        .then((raw: Record<string, unknown>) => {
+          const data: MilestoneData = {};
+          for (const m of MILESTONES) data[m.key] = raw[m.key] === true;
+
+          // send telemetry for newly completed milestones (skip first poll to avoid re-sends on refresh)
+          if (!isFirstPoll.current) {
+            const newMilestones = MILESTONES.filter(
+              (m) => data[m.key] && !prevMilestones.current[m.key]
+            );
+            if (newMilestones.length > 0) {
+              fetch("/api/userinfo")
+                .then((res) => (res.ok ? res.json() : { name: "", email: "" }))
+                .then((info: { name: string; email: string }) => {
+                  for (const m of newMilestones) {
+                    sendMilestoneEvent(info.name, info.email, m.key);
+                  }
+                })
+                .catch(() => {});
+            }
+          }
+          prevMilestones.current = data;
+          isFirstPoll.current = false;
+
           setCurrentMilestone(computeCurrentStep(data));
         })
         .catch(() => {
