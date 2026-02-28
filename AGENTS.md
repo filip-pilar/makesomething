@@ -25,6 +25,14 @@ never do these:
 - explain how code works unless they ask
 - placeholder content — always ask for their real words, their real ideas
 
+## guardrail mode (project state)
+
+`guardrail_mode: default`
+
+- valid values are only `default` and `advanced`
+- this line is the project-wide source of truth for guardrail mode
+- when mode changes, edit this line in this file to persist the new mode
+
 ## progress — milestones
 
 progress is tracked in `public/milestones.json`. when the user hits a milestone, set its value to `true`. do this silently — don't mention the file to the user.
@@ -77,19 +85,62 @@ choose fonts that match the user's vibe. don't default to the same font every ti
 
 **critical:** always add `"use client"` at the top of page files — HeroUI components require it.
 
-## off limits
+## guardrails (state-aware)
 
-- databases, authentication, external APIs that need keys
-- server actions or API routes
-- .env files or environment variables
-- terminal commands the user needs to run manually
+**npm packages are always fine** — if you need a package (confetti, icons, a date library, etc.) install it silently. never ask the user to run install commands.
 
-**npm packages are fine** — if you need a package (confetti, icons, a date library, etc.) just install it yourself silently. never ask the user to run terminal commands or explain what you're installing.
+### complex request classifier
 
-**when the user asks for something that needs 3rd party services** (like an AI chatbot, a social app with accounts, real-time multiplayer, anything needing APIs or a database): don't lecture them about technical limitations. just keep it simple and redirect:
-- "that's a great idea — it's a bit beyond what we can build today, but let's make a version that's still fun"
-- help them find a simpler version that captures the same energy. an AI chatbot becomes a personality quiz. a social app becomes a personal profile page. a multiplayer game becomes a single-player one.
-- frame the full version as something they could build in a future session, not something they can't do.
+treat a request as **complex** if it includes any of these:
+- databases or persistent backend storage
+- authentication or user accounts
+- backend ai/external api calls that need keys
+- multi-user real-time features
+- external services where they need to create accounts or get api keys
+- server actions, api routes, environment variables, or manual terminal setup by the user
+
+### mode: `default`
+
+in `default` mode, keep beginner guardrails on:
+- no databases, authentication, or external apis that need keys
+- no server actions or api routes
+- no `.env` files or environment variables
+- no terminal commands the user needs to run manually
+
+when a **complex** request comes in during `default` mode:
+1. check `public/milestones.json` and use `deployed` as source of truth.
+2. if `deployed` is `false`, give a **firm** simple-first nudge:
+   - tell them we should get something simple live first, then level it up.
+3. always warn clearly that advanced mode increases complexity and often needs accounts + api keys.
+4. ask for explicit plain-language yes/no confirmation to unlock:
+   - "do you want to unlock advanced mode for this project? this is more complex and more likely to break. yes or no?"
+5. accept plain yes/no variants (`yes`, `yeah`, `yep`, `no`, `nope`, etc.).
+6. if the answer is ambiguous, ask a short follow-up yes/no question. don't guess.
+7. if they say no:
+   - keep `guardrail_mode: default`
+   - offer a simpler version that captures the same energy.
+8. if they say yes:
+   - edit the mode marker to `guardrail_mode: advanced` **before** implementing advanced work.
+   - if `deployed` is `false`, make sure they heard the deploy-first recommendation before proceeding.
+
+if `deployed` is `true`, still warn and ask yes/no, but do **not** gate them on deploy-first.
+
+### mode: `advanced`
+
+in `advanced` mode, you may build complex features (database, auth, backend ai/apis, env vars, routes, manual setup), but guide carefully:
+- start with a short preflight list of required accounts/services/keys
+- guide one setup dependency at a time
+- translate all failures into plain language (never dump raw logs)
+- if setup blocks progress, propose and offer a fallback simpler version
+
+guardrails stay off project-wide until the user explicitly asks to re-enable them.
+
+### re-lock flow
+
+if the user says "turn guardrails back on" (or equivalent), then:
+1. edit the marker back to `guardrail_mode: default`
+2. confirm guardrails are back on
+3. continue with default-mode rules for future complex requests
 
 ## commands
 
