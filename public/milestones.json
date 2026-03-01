@@ -3,5 +3,8 @@
   "first_screen": false,
   "features_added": false,
   "deployed": false,
-  "shared": false
+  "shared": false,
+  "_state": {
+    "guardrail_mode": "default"
+  }
 }

@@ -25,17 +25,9 @@ never do these:
 - explain how code works unless they ask
 - placeholder content — always ask for their real words, their real ideas
 
-## guardrail mode (project state)
-
-`guardrail_mode: default`
-
-- valid values are only `default` and `advanced`
-- this line is the project-wide source of truth for guardrail mode
-- when mode changes, edit this line in this file to persist the new mode
-
 ## progress — milestones
 
-progress is tracked in `public/milestones.json`. when the user hits a milestone, set its value to `true`. do this silently — don't mention the file to the user.
+progress and guardrail state are tracked in `public/milestones.json`. do this silently — don't mention the file to the user.
 
 the milestones (in order):
 1. **idea_locked** — they've committed to a one-liner ("i'm building ___")
@@ -44,7 +36,12 @@ the milestones (in order):
 4. **deployed** — they've run `$deploy` and have a live URL
 5. **shared** — they've shared the link with someone
 
-update `public/milestones.json` as soon as a milestone happens. only set milestones to `true`, never back to `false`. the floating progress overlay in the browser reads this file automatically.
+update milestone keys in `public/milestones.json` as soon as they happen. only set milestone keys to `true`, never back to `false`. the floating progress overlay in the browser reads this file automatically.
+
+guardrail state key in `public/milestones.json`:
+- `_state.guardrail_mode` with valid values `default` and `advanced`
+- this is the source of truth for current guardrail mode
+- this value is allowed to switch both ways (`default` <-> `advanced`) based on explicit user confirmation
 
 don't show a text progress bar in messages anymore.
 
@@ -89,6 +86,12 @@ choose fonts that match the user's vibe. don't default to the same font every ti
 
 **npm packages are always fine** — if you need a package (confetti, icons, a date library, etc.) install it silently. never ask the user to run install commands.
 
+### mode resolution
+
+- read guardrail mode from `public/milestones.json` at `_state.guardrail_mode`
+- if `_state` or `guardrail_mode` is missing, treat mode as `default`
+- when changing mode, write it to `_state.guardrail_mode` in `public/milestones.json`
+
 ### complex request classifier
 
 treat a request as **complex** if it includes any of these:
@@ -117,10 +120,10 @@ when a **complex** request comes in during `default` mode:
 5. accept plain yes/no variants (`yes`, `yeah`, `yep`, `no`, `nope`, etc.).
 6. if the answer is ambiguous, ask a short follow-up yes/no question. don't guess.
 7. if they say no:
-   - keep `guardrail_mode: default`
+   - keep `_state.guardrail_mode` as `default`
    - offer a simpler version that captures the same energy.
 8. if they say yes:
-   - edit the mode marker to `guardrail_mode: advanced` **before** implementing advanced work.
+   - set `_state.guardrail_mode` to `advanced` **before** implementing advanced work.
    - if `deployed` is `false`, make sure they heard the deploy-first recommendation before proceeding.
 
 if `deployed` is `true`, still warn and ask yes/no, but do **not** gate them on deploy-first.
@@ -138,7 +141,7 @@ guardrails stay off project-wide until the user explicitly asks to re-enable the
 ### re-lock flow
 
 if the user says "turn guardrails back on" (or equivalent), then:
-1. edit the marker back to `guardrail_mode: default`
+1. set `_state.guardrail_mode` back to `default`
 2. confirm guardrails are back on
 3. continue with default-mode rules for future complex requests
 
