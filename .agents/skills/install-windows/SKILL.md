@@ -27,17 +27,16 @@ run `node -v` to check if Node.js is installed.
 
 ### install node.js
 
-tell the user to open PowerShell from the Start menu (not inside Codex) and paste this command:
+run winget to install Node.js. this command needs to run **outside the sandbox** — Codex will prompt the user to approve it, which is fine:
+```powershell
+winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
+```
 
-> i need to install something real quick. open **PowerShell** from your Start menu — search "PowerShell" and click it. then paste this and hit Enter:
->
-> `winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements`
->
-> you might see a prompt asking to allow changes — click Yes. come back here and tell me when it's done.
+tell the user:
 
-**wait for the user to confirm** before continuing. do not proceed until they say it's done.
+> installing Node.js — you might see a prompt asking to allow changes, click Yes.
 
-after they confirm, refresh the PATH so the current session can find node:
+after it finishes, refresh the PATH so the current session can find node:
 ```powershell
 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
 ```
