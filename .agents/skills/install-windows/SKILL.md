@@ -27,14 +27,17 @@ run `node -v` to check if Node.js is installed.
 
 ### install node.js
 
-try installing with winget:
-```powershell
-winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
-```
+tell the user to open PowerShell from the Start menu (not inside Codex) and paste this command:
 
-a UAC prompt may pop up asking "do you want to allow this app to make changes?" — that's normal.
+> i need to install something real quick. open **PowerShell** from your Start menu — search "PowerShell" and click it. then paste this and hit Enter:
+>
+> `winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements`
+>
+> you might see a prompt asking to allow changes — click Yes. come back here and tell me when it's done.
 
-after it finishes, refresh the PATH so the current session can find node:
+**wait for the user to confirm** before continuing. do not proceed until they say it's done.
+
+after they confirm, refresh the PATH so the current session can find node:
 ```powershell
 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
 ```
@@ -49,14 +52,6 @@ if `node` is still not found, tell the user:
 > looks like we need to refresh things — close the Codex app completely and reopen it, then type `$install-windows` again.
 
 stop here if node isn't found. don't continue.
-
-### if winget is not available
-
-if `winget` is not recognized, tell the user:
-
-> your version of Windows doesn't have winget. go to https://nodejs.org, download the LTS installer, and run it. come back here and type `$install-windows` again when it's done.
-
-stop here. don't continue until they come back.
 
 ## step 4: install dependencies
 
