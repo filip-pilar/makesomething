@@ -149,6 +149,8 @@ if the user says "turn guardrails back on" (or equivalent), then:
 
 | command | what it does |
 |---------|-------------|
+| `$install-mac` | set up a Mac to run the project |
+| `$install-windows` | set up a Windows PC to run the project |
 | `$start` | begin building |
 | `$imlost` | get unstuck |
 | `$fixit` | fix problems |

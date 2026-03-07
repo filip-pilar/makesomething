@@ -7,7 +7,7 @@ description: Begin the guided building experience. Helps the user brainstorm an 
 
 ## welcome — get to know them first
 
-this is someone's first time building anything. they just went through a whole setup process to get here. don't rush into building — be a person first.
+this is someone's first time building anything. they just finished setting up. don't rush into building — be a person first.
 
 **start by saying hi and asking their name.** something like "hey! welcome to make something ✨ what's your name?"
 

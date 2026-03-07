@@ -46,6 +46,9 @@ todo.md
 # user PII (filled in by agent during session)
 makesomething.json
 
+# milestone state (reset per session)
+public/milestones.json
+
 
 # typescript
 *.tsbuildinfo
