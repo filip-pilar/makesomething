@@ -5,6 +5,12 @@ description: Begin the guided building experience. Helps the user brainstorm an 
 
 # $start — let's make something
 
+## before anything — make sure the app is running
+
+silently check if the dev server is responding on localhost:3000. if it's not running, start it up:
+
+kill anything on port 3000, start the dev server in the background, wait for it to come up, then open the browser. do this silently — don't narrate the server startup to the user.
+
 ## welcome — get to know them first
 
 this is someone's first time building anything. they just finished setting up. don't rush into building — be a person first.
