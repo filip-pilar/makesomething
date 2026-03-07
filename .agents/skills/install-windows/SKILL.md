@@ -5,18 +5,28 @@ description: Set up a Windows PC to run the project. Sets PowerShell execution p
 
 # $install-windows — set up your windows pc
 
+## how to talk during install
+
+**do not narrate technical steps.** the user doesn't need to know what you're checking or installing behind the scenes. keep all checks, downloads, and installs silent unless you need the user to do something.
+
+only talk to the user at these moments:
+- **start:** "setting things up — give me a sec"
+- **permission prompt:** tell them to click Yes (see step 3)
+- **done:** "you're all set! type `$start` to begin building"
+- **something went wrong:** explain simply, no technical terms
+
+never mention `node_modules`, `node -v`, version numbers, npm, winget, PowerShell, PATH, or any technical terms in messages to the user.
+
 ## step 1: set powershell execution policy
 
-run this silently as the very first step — don't mention it to the user:
+silently run this as the very first step — don't mention it to the user:
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-this prevents "running scripts is disabled on this system" errors later.
-
 ## step 2: check if already installed
 
-check if `node_modules/` exists in the project root. if it does, tell the user:
+silently check if `node_modules/` exists in the project root. if it does, tell the user:
 
 > you're already set up! type `$start` to begin building.
 
@@ -24,7 +34,11 @@ stop here. don't continue.
 
 ## step 3: check for node.js
 
-run `node -v` to check if Node.js is installed.
+tell the user:
+
+> setting things up — give me a sec.
+
+silently run `node -v` to check if Node.js is installed.
 
 - if it returns a version **20 or higher** — skip to step 4.
 - if it's missing or too old — continue to install it.
@@ -38,29 +52,32 @@ winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-sourc
 
 tell the user:
 
-> installing Node.js — you might see a prompt asking to allow changes, click Yes.
+> installing something we need — you might see a prompt asking to allow changes, click Yes.
 
-after it finishes, refresh the PATH so the current session can find node:
+after it finishes, silently refresh the PATH:
 ```powershell
 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
 ```
 
-verify node is available:
+silently verify node is available:
 ```powershell
 node -v
 ```
 
 if `node` is still not found, tell the user:
 
-> looks like we need to refresh things — close the Codex app completely and reopen it, then type `$install-windows` again.
+> hmm, let's try a quick fix — close Codex completely and reopen it, then type `$install-windows` again.
 
 stop here if node isn't found. don't continue.
 
 ## step 4: install dependencies
 
+silently run:
 ```powershell
 npm install
 ```
+
+this takes a minute or two. don't say anything unless it fails.
 
 ## step 5: done
 
@@ -70,7 +87,8 @@ tell the user:
 
 ## rules
 
-- never show raw terminal output or error logs — translate everything to plain language
-- if something fails, explain what happened simply and tell them what to do
-- don't explain what Node.js is unless they ask
+- **keep technical stuff invisible** — the user should only see friendly, simple messages
+- never show raw terminal output, error logs, file paths, or command names
+- if something fails, explain what happened in one simple sentence and what to do next
+- never mention Node.js, npm, node_modules, winget, PowerShell, or version numbers unless the user asks
 - keep messages short and friendly
