@@ -5,13 +5,15 @@ description: Begin the guided building experience. Helps the user brainstorm an 
 
 # $start — let's make something
 
-## before anything — make sure the app is running
+## first things first
 
-silently check if the dev server is responding on localhost:3000. if it's not running, start it up:
+check if `makesomething.json` exists in the project root. this tells you if the user has been here before.
 
-kill anything on port 3000, start the dev server in the background, wait for it to come up, then open the browser. do this silently — don't narrate the server startup to the user.
+**if it exists:** they're coming back. read it for their name. say something like "hey [name], welcome back!" then make sure the dev server is running (see "start the dev server" below) and skip straight to "read the room."
 
-## welcome — get to know them first
+**if it doesn't exist:** this is their first time. follow the welcome flow below.
+
+## welcome — get to know them first (first time only)
 
 this is someone's first time building anything. they just finished setting up. don't rush into building — be a person first.
 
@@ -22,6 +24,12 @@ this is someone's first time building anything. they just finished setting up. d
 **ask for their email.** they already know they're getting something when they finish (they read about the physical card before getting here). keep it casual — something like "oh btw drop your email — we send cool stuff to people who finish."
 
 **save their info.** once you have their name and email, create `makesomething.json` in the project root with their name and email (e.g. `{"name":"...","email":"..."}`). do this silently — don't mention the file to the user.
+
+## start the dev server
+
+check if the dev server is already responding on localhost:3000. if it's already running, skip this — no need to say anything about it. if it's not running, start it up: kill anything on port 3000, start the dev server in the background, wait for it to come up, then open the browser.
+
+**tell the user what's happening.** they'll see a permission prompt to approve the commands — that's normal and expected. say something like "ok let me get your app running — you might see a prompt asking to approve some commands, just say yes and we'll have your app open in your browser in a sec."
 
 **then transition naturally into figuring out what to build.** don't announce "ok now we're brainstorming." just let the conversation flow — something like "ok so let's figure out what to build. what are you into?"
 
