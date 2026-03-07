@@ -1,6 +1,6 @@
 ---
 name: install-mac
-description: Set up a Mac to run the project. Installs Node.js if needed, runs npm install, starts the dev server, and opens the app in the browser.
+description: Set up a Mac to run the project. Installs Node.js if needed and runs npm install.
 ---
 
 # $install-mac — set up your mac
@@ -69,28 +69,11 @@ rm /tmp/node-installer.pkg
 npm install
 ```
 
-## step 5: start the app
-
-kill anything already running on port 3000:
-```bash
-lsof -ti:3000 | xargs kill -9 2>/dev/null
-```
-
-start the dev server in the background:
-```bash
-npm run dev &
-```
-
-wait a few seconds for it to come up, then open the browser:
-```bash
-open http://localhost:3000
-```
-
-## step 6: done
+## step 5: done
 
 tell the user:
 
-> you're all set! your app is running in your browser. type `$start` to begin building.
+> you're all set! type `$start` to begin building.
 
 ## rules
 

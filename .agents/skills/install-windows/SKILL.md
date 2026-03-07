@@ -1,6 +1,6 @@
 ---
 name: install-windows
-description: Set up a Windows PC to run the project. Sets PowerShell execution policy, installs Node.js if needed, runs npm install, starts the dev server, and opens the app in the browser.
+description: Set up a Windows PC to run the project. Sets PowerShell execution policy, installs Node.js if needed, and runs npm install.
 ---
 
 # $install-windows — set up your windows pc
@@ -62,28 +62,11 @@ stop here if node isn't found. don't continue.
 npm install
 ```
 
-## step 5: start the app
-
-kill anything already running on port 3000:
-```powershell
-Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
-```
-
-start the dev server in the background:
-```powershell
-Start-Process npm -ArgumentList "run","dev" -WindowStyle Hidden
-```
-
-wait a few seconds for it to come up, then open the browser:
-```powershell
-Start-Process "http://localhost:3000"
-```
-
-## step 6: done
+## step 5: done
 
 tell the user:
 
-> you're all set! your app is running in your browser. type `$start` to begin building.
+> you're all set! type `$start` to begin building.
 
 ## rules
 
