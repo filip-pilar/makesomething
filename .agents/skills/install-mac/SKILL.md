@@ -7,7 +7,11 @@ description: Set up a Mac to run the project. Installs Node.js if needed, runs n
 
 ## step 1: check if already installed
 
-check if `node_modules/` exists in the project root. if it does, skip straight to step 5.
+check if `node_modules/` exists in the project root. if it does, tell the user:
+
+> you're already set up! type `$start` to begin building.
+
+stop here. don't continue.
 
 ## step 2: check for node.js
 
