@@ -44,7 +44,13 @@ const instrumentSerif = Instrument_Serif({
 export const metadata: Metadata = {
   title: "makesomething ☀️",
   description: "build your first app with ai. look what i made!",
-  metadataBase: new URL("https://makesomething.so"),
+  metadataBase: new URL(
+    process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "https://makesomething.so"
+  ),
   openGraph: {
     title: "makesomething ☀️",
     description: "look what i made!",
