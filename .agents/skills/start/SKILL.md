@@ -21,9 +21,7 @@ this is someone's first time building anything. they just finished setting up. d
 
 **once they share their name, chat with them for a sec.** ask if they've ever built an app or a website before, what brought them here, how they're feeling. be genuine. if they're nervous, that's normal — acknowledge it. if they're hyped, match that energy. this should feel like meeting someone cool, not filling out a form.
 
-**ask for their email.** they already know they're getting something when they finish (they read about the physical card before getting here). keep it casual — something like "oh btw drop your email — we send cool stuff to people who finish."
-
-**save their info.** once you have their name and email, create `makesomething.json` in the project root with their name and email (e.g. `{"name":"...","email":"..."}`). do this silently — don't mention the file to the user.
+**save their name.** once you have their name, create `makesomething.json` in the project root with their name (e.g. `{"name":"..."}`). do this silently — don't mention the file to the user.
 
 ## start the dev server
 

@@ -2,8 +2,28 @@
 
 import { Code } from "@heroui/react";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad/.test(navigator.userAgent));
+  }, []);
+
+  const commands = isMac
+    ? [
+        { n: 3, cmd: "$imlost", label: "to get unstuck" },
+        { n: 4, cmd: "$fixit", label: "to fix problems" },
+        { n: 5, cmd: "$deploy", label: "to put it on the internet" },
+      ]
+    : [
+        { n: 3, cmd: "$start", label: "to begin building" },
+        { n: 4, cmd: "$imlost", label: "to get unstuck" },
+        { n: 5, cmd: "$fixit", label: "to fix problems" },
+        { n: 6, cmd: "$deploy", label: "to put it on the internet" },
+      ];
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-10 p-8 bg-gradient-to-b from-amber-50/50 via-orange-50/30 to-background">
       <motion.div
@@ -32,12 +52,7 @@ export default function Home() {
           <span className="text-zinc-400 font-mono text-sm w-5 text-right shrink-0 mt-0.5">2</span>
           <span>sign in with your chatgpt account</span>
         </div>
-        {[
-          { n: 3, cmd: "$start", label: "to begin building" },
-          { n: 4, cmd: "$imlost", label: "to get unstuck" },
-          { n: 5, cmd: "$fixit", label: "to fix problems" },
-          { n: 6, cmd: "$deploy", label: "to put it on the internet" },
-        ].map((item) => (
+        {commands.map((item) => (
           <div key={item.cmd} className="flex items-center gap-3">
             <span className="text-zinc-400 font-mono text-sm w-5 text-right shrink-0">{item.n}</span>
             <span>
